@@ -1,13 +1,16 @@
 import { useState } from 'react';
-import './App.css';
+import { ThemeProvider } from 'styled-components';
+import GlobalStyle from './styles/global.ts';
+import { lightTheme, darkTheme } from './styles/theme.ts';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [isDarkMode] = useState(false);
 
   return (
-    <div className="card">
-      <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
-    </div>
+    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
+      <GlobalStyle />
+      {/* ... */}
+    </ThemeProvider>
   );
 }
 
