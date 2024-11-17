@@ -1,18 +1,12 @@
-import {
-  type SyntheticEvent,
-  type ImgHTMLAttributes,
-  useState,
-  forwardRef,
-  useEffect,
-} from 'react';
-import { StyledImage } from './Image.styled.ts';
+import { type SyntheticEvent, type ImgHTMLAttributes, useState, forwardRef } from 'react';
+import { StyledImageContainer, StyledImage } from './Image.styled.ts';
 
 interface CommonImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
   placeholderSrc?: string;
-  onLoad?: (event: Event | SyntheticEvent<HTMLImageElement, Event>) => void;
-  onError?: (event: (Event | string) | SyntheticEvent<HTMLImageElement, Event>) => void;
+  onLoad?: (event: SyntheticEvent<HTMLImageElement, Event>) => void;
+  onError?: (event: SyntheticEvent<HTMLImageElement, Event>) => void;
 }
 
 interface FixedSizeImageProps extends CommonImageProps {
@@ -29,17 +23,13 @@ interface FillImageProps extends CommonImageProps {
 
 type ImageProps = FixedSizeImageProps | FillImageProps;
 
-const ImageComponent = forwardRef<HTMLImageElement, ImageProps>((props, ref) => {
+const ImageComponent = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
   const {
-    src,
+    placeholderSrc,
     width,
     height,
     fill,
-    sizes,
-    srcSet,
-    placeholderSrc,
     onLoad,
-    onError,
     loading = 'lazy',
     decoding = 'async',
     fetchPriority = 'auto',
@@ -47,45 +37,32 @@ const ImageComponent = forwardRef<HTMLImageElement, ImageProps>((props, ref) => 
   } = props;
 
   const [loaded, setLoaded] = useState(false);
-  const [currentSrc, setCurrentSrc] = useState(placeholderSrc || '');
 
-  useEffect(() => {
-    const img = new Image();
-    img.src = src;
-    if (srcSet) {
-      img.srcset = srcSet;
+  const handleLoad = (event: SyntheticEvent<HTMLImageElement, Event>) => {
+    setLoaded(true);
+    if (onLoad) {
+      onLoad(event);
     }
-
-    img.onload = (event: Event) => {
-      setCurrentSrc(src);
-      setLoaded(true);
-      if (onLoad) {
-        onLoad(event);
-      }
-    };
-
-    img.onerror = (event: Event | string) => {
-      if (onError) {
-        onError(event);
-      }
-    };
-  }, [src, srcSet, onLoad, onError]);
+  };
 
   return (
-    <StyledImage
-      src={currentSrc}
-      srcSet={loaded ? srcSet : undefined}
-      sizes={loaded ? sizes : undefined}
-      width={!fill ? width : undefined}
-      height={!fill ? height : undefined}
+    <StyledImageContainer
       ref={ref}
-      loading={loading}
-      decoding={decoding}
-      fetchPriority={fetchPriority}
-      {...rest}
+      $width={width}
+      $height={height}
       $fill={fill}
-      $blurred={Boolean(placeholderSrc) && !loaded}
-    />
+      $placeholderSrc={placeholderSrc}
+      $loaded={loaded}
+    >
+      <StyledImage
+        loading={loading}
+        decoding={decoding}
+        fetchPriority={fetchPriority}
+        onLoad={handleLoad}
+        $loaded={loaded}
+        {...rest}
+      />
+    </StyledImageContainer>
   );
 });
 
