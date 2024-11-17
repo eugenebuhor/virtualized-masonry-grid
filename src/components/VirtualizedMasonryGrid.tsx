@@ -1,6 +1,9 @@
 import { type ReactNode, useEffect, useState, useRef, useCallback } from 'react';
 import { useTheme } from 'styled-components';
+import debounce from 'lodash.debounce';
 import { GridContainer, GridItem } from './VirtualizedMasonryGrid.styled.ts';
+import { getColumns } from '../utils/masonry.ts';
+import type { ColumnsConfig } from '../types/masonry.ts';
 
 type BaseGridItem = {
   id: string | number;
@@ -18,17 +21,19 @@ interface GridItemPosition {
 interface VirtualizedMasonryGridProps<T extends BaseGridItem> {
   items: T[];
   children: (item: T, index: number) => ReactNode;
-  columns?: number;
+  columns?: number | ColumnsConfig;
   gap?: number;
+  overscan?: number;
 }
 
 export const DEFAULT_COLUMNS = 3;
 
 const VirtualizedMasonryGrid = <T extends BaseGridItem>({
   items,
+  children,
   columns = DEFAULT_COLUMNS,
   gap = 16,
-  children,
+  overscan = 8,
 }: VirtualizedMasonryGridProps<T>) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [positions, setPositions] = useState<GridItemPosition[]>([]);
@@ -40,9 +45,12 @@ const VirtualizedMasonryGrid = <T extends BaseGridItem>({
   const updateLayout = useCallback(() => {
     if (!containerRef.current) return;
 
+    const columnsCount =
+      typeof columns === 'number' ? columns : getColumns(columns, theme.viewport.breakpoints);
+
     const containerWidth = containerRef.current.offsetWidth;
-    const columnWidth = (containerWidth - gap * (columns - 1)) / columns;
-    const columnHeights = Array(columns).fill(0);
+    const columnWidth = (containerWidth - gap * (columnsCount - 1)) / columnsCount;
+    const columnHeights = Array(columnsCount).fill(0);
 
     const calculatedPositions = items.map((item) => {
       const shortestColumn = columnHeights.indexOf(Math.min(...columnHeights));
@@ -83,16 +91,29 @@ const VirtualizedMasonryGrid = <T extends BaseGridItem>({
       return acc;
     }, []);
 
-    const startViewport = Math.max(0, viewportIndices[0]);
-    const endViewport = Math.min(items.length - 1, viewportIndices[viewportIndices.length - 1]);
+    const startOverscan = Math.max(0, viewportIndices[0] - overscan);
+    const endOverscan = Math.min(
+      items.length - 1,
+      viewportIndices[viewportIndices.length - 1] + overscan,
+    );
 
     setVisibleItems(
-      Array.from({ length: endViewport - startViewport + 1 }, (_, i) => startViewport + i),
+      Array.from({ length: endOverscan - startOverscan + 1 }, (_, i) => startOverscan + i),
     );
-  }, [positions, items.length, gap]);
+  }, [positions, overscan, items.length, gap]);
 
   useEffect(() => {
     updateLayout();
+
+    const debouncedResizeHandler = debounce(() => {
+      updateLayout();
+    }, 200);
+
+    window.addEventListener('resize', debouncedResizeHandler);
+    return () => {
+      debouncedResizeHandler.cancel();
+      window.removeEventListener('resize', debouncedResizeHandler);
+    };
   }, [updateLayout]);
 
   useEffect(() => {
