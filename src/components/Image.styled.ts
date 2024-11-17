@@ -6,6 +6,7 @@ interface StyledImageContainerProps {
   $fill?: boolean;
   $placeholderSrc?: string;
   $loaded: boolean;
+  $objectFit: string;
 }
 
 const FillCss = css`
@@ -14,7 +15,6 @@ const FillCss = css`
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
 `;
 
 const DimensionCss = css<Pick<StyledImageContainerProps, '$width' | '$height'>>`
@@ -25,22 +25,21 @@ const DimensionCss = css<Pick<StyledImageContainerProps, '$width' | '$height'>>`
 export const StyledImageContainer = styled.div<StyledImageContainerProps>`
   position: relative;
   background-image: url(${({ $placeholderSrc }) => $placeholderSrc});
-  background-size: cover;
+  background-size: ${({ $objectFit }) => $objectFit};
   background-position: center;
+  background-repeat: no-repeat;
 
   ${(props) => (props.$fill ? FillCss : props.$width && props.$height ? DimensionCss : '')}
 `;
 
 interface StyledImageProps {
   $loaded: boolean;
+  $objectFit: string;
 }
 
 export const StyledImage = styled.img<StyledImageProps>`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  ${FillCss};
+  object-fit: ${({ $objectFit }) => $objectFit};
 
   opacity: ${({ $loaded }) => ($loaded ? 1 : 0)};
   transition: opacity 0.3s ease-in-out;
