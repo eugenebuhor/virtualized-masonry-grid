@@ -42,8 +42,6 @@ const PhotoPage = () => {
     return <div>Photo not found.</div>;
   }
 
-  console.log('Photo', photo);
-
   return (
     <StyledMain>
       <ImageSection>

@@ -1,32 +1,17 @@
 import { Link, useSearchParams } from 'react-router-dom';
-import styled, { useTheme } from 'styled-components';
-import Image from '../components/Image.tsx';
+import { useTheme } from 'styled-components';
 import VirtualizedMasonryGrid from '../components/VirtualizedMasonryGrid.tsx';
-import { Main, Section } from '../components/Layout.tsx';
 import { usePhotos } from '../hooks/usePhotos.ts';
 import { getPhotoSrcSet } from '../utils/pexels.ts';
 import type { ColumnsConfig } from '../types/masonry.ts';
+import GalleryImage from '../components/gallery/GalleryImage.tsx';
+import { Main, Section } from '../components/Layout.tsx';
 
 const masonryGridColumns: ColumnsConfig = {
   mobile: 2,
   tablet: 3,
-  largeScreen: 4,
+  laptop: 4,
 };
-
-const ImageWrapper = styled.div<{ $aspectRatio: number }>`
-  display: block;
-  width: 100%;
-  border-radius: ${(props) => props.theme.border.radius.md};
-  padding-bottom: ${(props) => props.$aspectRatio * 100}%;
-  position: relative;
-
-  transition: transform 0.2s ease-in-out;
-  overflow: hidden;
-
-  &:hover {
-    transform: scale(1.015);
-  }
-`;
 
 const GalleryPage = () => {
   const theme = useTheme();
@@ -55,32 +40,21 @@ const GalleryPage = () => {
   return (
     <Main>
       <Section>
-        <VirtualizedMasonryGrid items={photos} columns={masonryGridColumns} gap={16} overscan={8}>
-          {(photo) => {
-            const srcSet = getPhotoSrcSet(photo.src, ['small', 'medium', 'large', 'large2x']);
-            const sizes = `
-              ${theme.viewport.mediaQueries.mobile} calc(100vw / ${masonryGridColumns.mobile}),
-              ${theme.viewport.mediaQueries.tablet} calc(100vw / ${masonryGridColumns.tablet}),
-              ${theme.viewport.mediaQueries.laptop} calc(100vw / ${masonryGridColumns.laptop}),
-              ${theme.viewport.mediaQueries.largeScreen} calc(100vw / ${masonryGridColumns.largeScreen}),
-              100vw
-            `;
-
-            return (
-              <Link to={`/gallery/${photo.id}`} state={photo}>
-                <ImageWrapper $aspectRatio={photo.height / photo.width} key={photo.id}>
-                  <Image
-                    src={photo.src.medium}
-                    placeholderSrc={photo.src.small}
-                    alt={photo.alt}
-                    srcSet={srcSet}
-                    sizes={sizes}
-                    fill
-                  />
-                </ImageWrapper>
-              </Link>
-            );
-          }}
+        <VirtualizedMasonryGrid items={photos} columns={masonryGridColumns} gap={16} overscan={10}>
+          {(photo) => (
+            <Link to={`/gallery/${photo.id}`} state={photo}>
+              <GalleryImage
+                src={photo.src.portrait}
+                placeholderSrc={photo.src.small}
+                alt={photo.alt}
+                height={photo.height}
+                width={photo.width}
+                srcSet={getPhotoSrcSet(photo.src, ['tiny', 'small', 'medium', 'large', 'portrait'])}
+                mediaQueries={theme.viewport.mediaQueries}
+                columns={masonryGridColumns}
+              />
+            </Link>
+          )}
         </VirtualizedMasonryGrid>
       </Section>
     </Main>
