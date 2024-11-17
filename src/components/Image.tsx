@@ -7,6 +7,7 @@ interface CommonImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   placeholderSrc?: string;
   onLoad?: (event: SyntheticEvent<HTMLImageElement, Event>) => void;
   onError?: (event: SyntheticEvent<HTMLImageElement, Event>) => void;
+  objectFit?: 'contain' | 'cover';
 }
 
 interface FixedSizeImageProps extends CommonImageProps {
@@ -21,9 +22,9 @@ interface FillImageProps extends CommonImageProps {
   height?: never;
 }
 
-type ImageProps = FixedSizeImageProps | FillImageProps;
+export type ImageProps = FixedSizeImageProps | FillImageProps;
 
-const ImageComponent = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
+const Image = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
   const {
     placeholderSrc,
     width,
@@ -33,6 +34,7 @@ const ImageComponent = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
     loading = 'lazy',
     decoding = 'async',
     fetchPriority = 'auto',
+    objectFit = 'cover',
     ...rest
   } = props;
 
@@ -53,6 +55,7 @@ const ImageComponent = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
       $fill={fill}
       $placeholderSrc={placeholderSrc}
       $loaded={loaded}
+      $objectFit={objectFit}
     >
       <StyledImage
         loading={loading}
@@ -60,10 +63,11 @@ const ImageComponent = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
         fetchPriority={fetchPriority}
         onLoad={handleLoad}
         $loaded={loaded}
+        $objectFit={objectFit}
         {...rest}
       />
     </StyledImageContainer>
   );
 });
 
-export default ImageComponent;
+export default Image;

@@ -19,6 +19,7 @@ export interface Photo {
   photographer: string;
   src: { [key in PhotoSizeType]: string };
   alt: string;
+  avg_color: string;
 }
 
 /* API */
