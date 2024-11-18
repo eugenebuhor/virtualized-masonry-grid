@@ -7,17 +7,64 @@ import { Main, Section } from '../components/Layout.tsx';
 import PhotoMeta from '../components/photo/PhotoMeta.tsx';
 import useMediaQuery from '../hooks/useMediaQuery.ts';
 
+const NoResultFallback = () => {
+  return (
+    <Main>
+      <Section>
+        <div>Cannot find photo.</div>
+      </Section>
+    </Main>
+  );
+};
+
+const LoadingFallback = () => {
+  return (
+    <Main>
+      <Section>
+        <div>Loading...</div>
+      </Section>
+    </Main>
+  );
+};
+
+const ErrorFallback = ({ refetch }: { refetch: () => void }) => {
+  return (
+    <Main>
+      <Section>
+        <div>
+          <h2>Unable to Load Photo</h2>
+          <p>There was an error while loading the photo. Please try again.</p>
+          <button type="button" onClick={() => refetch()}>
+            Retry
+          </button>
+        </div>
+      </Section>
+    </Main>
+  );
+};
+
 const PhotoPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.viewport.mediaQueries.mobile);
   const { state } = useLocation() as Location<Photo | null>;
   const { photoId } = useParams();
-  const { data } = usePhoto({ id: parseInt(photoId!) }, { enabled: !state });
+  const { data, isLoading, isError, refetch } = usePhoto(
+    { id: parseInt(photoId!) },
+    { enabled: !state },
+  );
 
   const photo = state || data;
 
+  if (isLoading) {
+    return <LoadingFallback />;
+  }
+
+  if (isError) {
+    return <ErrorFallback refetch={refetch} />;
+  }
+
   if (!photo) {
-    return <div>Photo not found.</div>;
+    return <NoResultFallback />;
   }
 
   return (
