@@ -53,8 +53,14 @@ const commonTheme = {
   layout: {
     maxWidth: '1440px',
     minWidth: '320px',
-    padding: '15px',
     headerHeight: '100px',
+  },
+  spacing: {
+    padding: {
+      sm: '8px',
+      md: '12px',
+      lg: '16px',
+    },
   },
   border: {
     radius: {

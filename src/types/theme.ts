@@ -80,7 +80,6 @@ export interface Typography {
 export interface Layout {
   maxWidth: string;
   minWidth: string;
-  padding: string;
   headerHeight: string;
 }
 
@@ -92,5 +91,13 @@ export interface Border {
   width: {
     sm: string;
     md: string;
+  };
+}
+
+export interface Spacing {
+  padding: {
+    sm: string;
+    md: string;
+    lg: string;
   };
 }

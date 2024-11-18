@@ -42,7 +42,7 @@ const GlobalStyle = createGlobalStyle(
       text-decoration: none;
       border: none;
       user-select: none;
-      padding: 8px 12px;
+      padding: ${theme.spacing.padding.sm} ${theme.spacing.padding.md};
       background-color: ${theme.palette.common.gray100};
       color: ${theme.palette.text.primary};
       border-radius: ${theme.border.radius.sm};
@@ -59,7 +59,7 @@ const GlobalStyle = createGlobalStyle(
 
     input {
       appearance: none;
-      padding: 8px 12px;
+      padding: ${theme.spacing.padding.sm} ${theme.spacing.padding.md};
       color: ${theme.palette.text.primary};
       caret-color: ${theme.palette.text.primary};
       border: ${theme.border.width.sm} solid ${theme.palette.border.medium};
