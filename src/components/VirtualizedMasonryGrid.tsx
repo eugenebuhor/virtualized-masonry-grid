@@ -45,6 +45,12 @@ interface VirtualizedMasonryGridProps<T extends GridItem> {
    * Index of the item to scroll to.
    */
   indexToScroll?: number;
+
+  /**
+   * Throttle the scroll event.
+   * Note: This is useful when the scroll event is causing performance issues.
+   */
+  throttledScroll?: boolean;
 }
 
 export const DEFAULT_COLUMNS = 3;
@@ -66,6 +72,7 @@ const VirtualizedMasonryGrid = <T extends GridItem>({
   loadMore,
   hasMore,
   indexToScroll,
+  throttledScroll = true,
 }: VirtualizedMasonryGridProps<T>) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const loaderRef = useRef<HTMLDivElement | null>(null);
@@ -85,6 +92,7 @@ const VirtualizedMasonryGrid = <T extends GridItem>({
     containerRef,
     overscan,
     gap,
+    throttledScroll,
     itemsLength: items.length,
   });
 
