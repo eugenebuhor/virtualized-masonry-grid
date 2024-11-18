@@ -98,7 +98,11 @@ const GalleryPage = () => {
           indexToScroll={indexToScroll}
         >
           {(photo) => (
-            <Link to={`/photo/${photo.id}`} state={{ data: photo, query }}>
+            <Link
+              to={`/photo/${photo.id}`}
+              state={{ data: photo, query }}
+              aria-label={`View photo: ${photo.alt}`}
+            >
               <GalleryImage
                 src={photo.src.portrait}
                 color={photo.avg_color}
