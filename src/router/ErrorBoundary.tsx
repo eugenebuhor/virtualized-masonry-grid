@@ -1,15 +1,6 @@
-import React from 'react';
-import { useRouteError, isRouteErrorResponse } from 'react-router-dom';
+import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-const Container = styled.div`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-`;
+import { Main, Section } from '../components/Layout.tsx';
 
 const Message = styled.h1`
   font-size: ${({ theme }) => theme.typography.fontSize.h1};
@@ -24,7 +15,7 @@ const Details = styled.pre`
   white-space: pre-wrap;
 `;
 
-const ErrorBoundary: React.FC = () => {
+const ErrorBoundary = () => {
   const error = useRouteError();
   let errorMessage: string;
 
@@ -37,11 +28,14 @@ const ErrorBoundary: React.FC = () => {
   }
 
   return (
-    <Container>
-      <Message>Oops!</Message>
-      <Description>An unexpected error has occurred.</Description>
-      <Details>{errorMessage}</Details>
-    </Container>
+    <Main>
+      <Section>
+        <Link to="/">←&nbsp;&nbsp;&nbsp;Back to Home</Link>
+        <Message>Oops!</Message>
+        <Description>An unexpected error has occurred.</Description>
+        <Details>{errorMessage}</Details>
+      </Section>
+    </Main>
   );
 };
 
