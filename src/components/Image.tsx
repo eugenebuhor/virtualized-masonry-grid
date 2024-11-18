@@ -1,5 +1,5 @@
 import { type SyntheticEvent, type ImgHTMLAttributes, useState, forwardRef } from 'react';
-import { StyledImageContainer, StyledImage } from './Image.styled.ts';
+import { ImageContainer, Img, PlaceholderImg } from './Image.styled.ts';
 
 interface CommonImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   src: string;
@@ -48,7 +48,7 @@ const Image = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
   };
 
   return (
-    <StyledImageContainer
+    <ImageContainer
       ref={ref}
       $width={width}
       $height={height}
@@ -57,7 +57,10 @@ const Image = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
       $loaded={loaded}
       $objectFit={objectFit}
     >
-      <StyledImage
+      {placeholderSrc ? (
+        <PlaceholderImg src={placeholderSrc} $objectFit={objectFit} alt="" />
+      ) : null}
+      <Img
         loading={loading}
         decoding={decoding}
         fetchPriority={fetchPriority}
@@ -66,7 +69,7 @@ const Image = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
         $objectFit={objectFit}
         {...rest}
       />
-    </StyledImageContainer>
+    </ImageContainer>
   );
 });
 
