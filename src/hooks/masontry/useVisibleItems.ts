@@ -8,6 +8,7 @@ type VisibleItemsHook = {
   overscan: number;
   gap: number;
   itemsLength: number;
+  throttledScroll?: boolean;
 };
 
 /**
@@ -19,6 +20,7 @@ export const useVisibleItems = ({
   overscan,
   gap,
   itemsLength,
+  throttledScroll,
 }: VisibleItemsHook) => {
   const [visibleItems, setVisibleItems] = useState<number[]>([]);
 
@@ -75,14 +77,18 @@ export const useVisibleItems = ({
   useEffect(() => {
     updateVisibleItems();
 
-    const throttledScrollHandler = debounce(updateVisibleItems, 50);
+    const throttledScrollHandler = throttledScroll
+      ? debounce(updateVisibleItems, 50)
+      : updateVisibleItems;
 
     window.addEventListener('scroll', throttledScrollHandler);
     return () => {
-      throttledScrollHandler.cancel();
+      if (throttledScroll) {
+        (throttledScrollHandler as ReturnType<typeof debounce>).cancel();
+      }
       window.removeEventListener('scroll', throttledScrollHandler);
     };
-  }, [updateVisibleItems]);
+  }, [updateVisibleItems, throttledScroll]);
 
   // update visible items when positions change
   useEffect(() => {
