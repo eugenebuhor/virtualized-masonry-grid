@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { searchPhotos, getCuratedPhotos } from '../api/pexels.ts';
+import { searchPhotos, getCuratedPhotos } from '../../api/pexels.ts';
 import type {
   GetCuratedPhotosParams,
   PhotosResponse,
   SearchPhotosParams,
-} from '../types/pexels.ts';
+} from '../../types/pexels.ts';
 
 type UsePhotosParams = Partial<SearchPhotosParams & GetCuratedPhotosParams>;
 

@@ -1,13 +1,14 @@
+import { useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import VirtualizedMasonryGrid from '../components/VirtualizedMasonryGrid.tsx';
-import { usePhotos } from '../hooks/usePhotos.ts';
-import { getPhotoSrcSet } from '../utils/pexels.ts';
-import type { ColumnsConfig } from '../types/masonry.ts';
 import GalleryImage from '../components/gallery/GalleryImage.tsx';
 import { Main, Section } from '../components/Layout.tsx';
+import { usePhotos } from '../hooks/query/usePhotos.ts';
+import { getPhotoSrcSet } from '../utils/pexels.ts';
+import type { GridColumnsConfig } from '../types/masonry.ts';
 
-const masonryGridColumns: ColumnsConfig = {
+const masonryGridColumns: GridColumnsConfig = {
   mobile: 2,
   tablet: 3,
   laptop: 4,
@@ -54,10 +55,16 @@ const GalleryPage = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query') || '';
   const page = searchParams.get('page') || '1';
-  const { data, isLoading, isError, refetch } = usePhotos({
+  const { data, isLoading, isError, refetch, hasNextPage, fetchNextPage } = usePhotos({
     query,
     page: parseInt(page, 10),
   });
+
+  const loadMore = useCallback(() => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, fetchNextPage]);
 
   if (isLoading) {
     return <LoadingFallback />;
@@ -76,7 +83,14 @@ const GalleryPage = () => {
   return (
     <Main>
       <Section>
-        <VirtualizedMasonryGrid items={photos} columns={masonryGridColumns} gap={16} overscan={10}>
+        <VirtualizedMasonryGrid
+          items={photos}
+          columns={masonryGridColumns}
+          loadMore={loadMore}
+          hasMore={hasNextPage}
+          gap={16}
+          overscan={4}
+        >
           {(photo) => (
             <Link to={`/photo/${photo.id}`} state={photo}>
               <GalleryImage
