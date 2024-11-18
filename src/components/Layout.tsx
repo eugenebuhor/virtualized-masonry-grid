@@ -21,14 +21,14 @@ export const Section = styled.section<{ $row?: boolean; $gap?: string }>`
   `}
 `;
 
-const ColumnsCss = css<{ $columns?: number; $gap?: string }>`
-  ${({ theme, $columns, $gap = '0rem' }) => css`
+const ColumnsCss = css<{ $columns?: number }>`
+  ${({ theme, $columns }) => css`
     flex-direction: row;
     align-items: flex-start;
     justify-content: center;
 
     & > ${Section} {
-      max-width: calc(${theme.layout.maxWidth} / ${$columns} - ${$gap});
+      max-width: calc(${theme.layout.maxWidth} / ${$columns});
     }
   `}
 `;
@@ -40,9 +40,9 @@ export const Main = styled.main<{ $columns?: number; $gap?: string }>`
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    min-height: 100vh;
-    min-width: ${({ theme }) => theme.layout.minWidth};
-    $gap: ${$gap};
+    min-height: calc(100vh - ${theme.layout.headerHeight});
+    min-width: ${theme.layout.minWidth};
+    gap: ${$gap};
 
     & > ${Section} {
       max-width: ${theme.layout.maxWidth};

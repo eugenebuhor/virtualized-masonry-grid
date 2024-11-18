@@ -49,11 +49,21 @@ const GlobalStyle = createGlobalStyle(
     }
 
     input {
-      border: none;
       appearance: none;
+      padding: 8px 12px;
+      color: ${theme.palette.text.primary};
       caret-color: ${theme.palette.text.primary};
+      border: ${theme.border.width.sm} solid ${theme.palette.border.medium};
+      border-radius: ${theme.border.radius.sm};
+      background-color: ${({ theme }) => theme.palette.surface.secondary};
+      font-size: ${({ theme }) => theme.typography.fontSize.body2};
+
       &:focus {
         outline: none;
+      }
+
+      &::placeholder {
+        color: ${theme.palette.common.gray400};
       }
     }
   `,
