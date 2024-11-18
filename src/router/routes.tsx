@@ -1,6 +1,6 @@
 import { lazy, Suspense } from 'react';
 import { type RouteObject, Navigate } from 'react-router-dom';
-import MainLayout from './MainLayout.tsx';
+import MainLayout from './MainLayout';
 
 const GalleryPage = lazy(() => import('../pages/GalleryPage.tsx'));
 const GalleryPhotoPage = lazy(() => import('../pages/PhotoPage.tsx'));
@@ -19,7 +19,7 @@ const routes: RouteObject[] = [
         ),
       },
       {
-        path: '/gallery/:photoId',
+        path: '/photo/:photoId',
         element: (
           <Suspense fallback={<div>Loading GalleryPhotoPage...</div>}>
             <GalleryPhotoPage />

@@ -13,7 +13,6 @@ export const ImageContainer = styled.div<{ $aspectRatio: number }>`
   width: 100%;
   max-width: ${({ $aspectRatio }) => `calc(75vh / ${$aspectRatio})`};
 
-  border-radius: ${(props) => props.theme.border.radius.sm};
   overflow: hidden;
 `;
 
@@ -36,6 +35,7 @@ export const ImageBackground = styled.div<{ $bgColor: string }>`
     left: 0;
     z-index: -1;
 
+    border-radius: ${(props) => props.theme.border.radius.sm};
     background-color: ${(props) => props.$bgColor || props.theme.palette.surface.secondary};
     opacity: 0.2;
   }

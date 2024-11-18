@@ -14,4 +14,5 @@ export const Description = styled.p`
   padding: 1rem;
   background-color: ${({ theme }) => theme.palette.surface.secondary};
   font-size: ${({ theme }) => theme.typography.fontSize.body1};
+  border-radius: ${({ theme }) => theme.border.radius.sm};
 `;

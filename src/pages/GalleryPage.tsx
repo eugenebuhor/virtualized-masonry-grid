@@ -17,10 +17,10 @@ const GalleryPage = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query') || '';
-
+  const page = searchParams.get('page') || '1';
   const { data, isLoading, isError } = usePhotos({
     query,
-    page: 1,
+    page: parseInt(page, 10),
   });
 
   if (isLoading) {
@@ -42,7 +42,7 @@ const GalleryPage = () => {
       <Section>
         <VirtualizedMasonryGrid items={photos} columns={masonryGridColumns} gap={16} overscan={10}>
           {(photo) => (
-            <Link to={`/gallery/${photo.id}`} state={photo}>
+            <Link to={`/photo/${photo.id}`} state={photo}>
               <GalleryImage
                 src={photo.src.portrait}
                 placeholderSrc={photo.src.small}
