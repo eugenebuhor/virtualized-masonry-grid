@@ -1,37 +1,15 @@
-import styled from 'styled-components';
+import { useTheme } from 'styled-components';
 import { useLocation, useParams, type Location } from 'react-router';
 import { usePhoto } from '../hooks/usePhoto.ts';
 import PhotoImage from '../components/photo/PhotoImage.tsx';
 import type { Photo } from '../types/pexels.ts';
 import { Main, Section } from '../components/Layout.tsx';
 import PhotoMeta from '../components/photo/PhotoMeta.tsx';
-
-const StyledMain = styled(Main)`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 2rem;
-
-  @media ${({ theme }) => theme.viewport.mediaQueries.tablet} {
-    flex-direction: row;
-  }
-`;
-
-const ImageSection = styled(Section)`
-  display: flex;
-  flex-direction: column;
-  align-content: flex-start;
-  margin: unset;
-`;
-
-const MetaSection = styled(Section)`
-  display: flex;
-  flex-direction: column;
-  align-content: flex-start;
-  margin: unset;
-`;
+import useMediaQuery from '../hooks/useMediaQuery.ts';
 
 const PhotoPage = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.viewport.mediaQueries.mobile);
   const { state } = useLocation() as Location<Photo | null>;
   const { photoId } = useParams();
   const { data } = usePhoto({ id: parseInt(photoId!) }, { enabled: !state });
@@ -43,8 +21,8 @@ const PhotoPage = () => {
   }
 
   return (
-    <StyledMain>
-      <ImageSection>
+    <Main $columns={isMobile ? 1 : 2}>
+      <Section>
         <PhotoImage
           src={photo.src.portrait}
           placeholderSrc={photo.src.small}
@@ -54,11 +32,11 @@ const PhotoPage = () => {
           height={photo.height}
           bgColor={photo.avg_color}
         />
-      </ImageSection>
-      <MetaSection>
+      </Section>
+      <Section>
         <PhotoMeta photographer={photo.photographer} alt={photo.alt} />
-      </MetaSection>
-    </StyledMain>
+      </Section>
+    </Main>
   );
 };
 

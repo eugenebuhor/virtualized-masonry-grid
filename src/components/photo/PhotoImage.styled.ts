@@ -36,7 +36,7 @@ export const ImageBackground = styled.div<{ $bgColor: string }>`
     left: 0;
     z-index: -1;
 
-    background-color: ${(props) => props.$bgColor || props.theme.palette.common.gray100};
+    background-color: ${(props) => props.$bgColor || props.theme.palette.surface.secondary};
     opacity: 0.2;
   }
 `;
