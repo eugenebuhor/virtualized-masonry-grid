@@ -38,7 +38,7 @@ const NavBack = ({ query, photoId }: NavBackProps) => {
   return (
     <Nav>
       <Section as="div">
-        <a href="#" onClick={goBack} role="button">
+        <a href="#" onClick={goBack} role="button" aria-label="Navigate to homepage">
           ←&nbsp;&nbsp;&nbsp;Back to Gallery
         </a>
       </Section>

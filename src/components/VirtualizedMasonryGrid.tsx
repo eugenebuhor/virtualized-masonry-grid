@@ -127,7 +127,7 @@ const VirtualizedMasonryGrid = <T extends GridItem>({
 
           return (
             <StyledGridItem
-              role="list-item"
+              role="listitem"
               key={`${item.id}-${index}`}
               $translateX={pos.translateX}
               $translateY={pos.translateY}
