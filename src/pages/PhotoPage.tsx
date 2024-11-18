@@ -72,12 +72,11 @@ const PhotoPage = () => {
       <Section>
         <PhotoImage
           src={photo.src.portrait}
-          placeholderSrc={photo.src.small}
           alt={photo.alt}
           srcSet={`${photo.src.large} 1x, ${photo.src.large2x} 2x`}
           width={photo.width}
           height={photo.height}
-          bgColor={photo.avg_color}
+          color={photo.avg_color}
         />
       </Section>
       <Section>

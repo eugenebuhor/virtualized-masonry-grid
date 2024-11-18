@@ -95,7 +95,7 @@ const GalleryPage = () => {
             <Link to={`/photo/${photo.id}`} state={photo}>
               <GalleryImage
                 src={photo.src.portrait}
-                placeholderSrc={photo.src.small}
+                color={photo.avg_color}
                 alt={photo.alt}
                 height={photo.height}
                 width={photo.width}

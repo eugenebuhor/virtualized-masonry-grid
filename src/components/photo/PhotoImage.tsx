@@ -7,30 +7,21 @@ interface PhotoImageProps {
   src: string;
   alt: string;
   srcSet: string;
-  placeholderSrc: string;
-  bgColor: string;
+  color: string;
 }
 
-const PhotoImage = ({
-  height,
-  width,
-  src,
-  alt,
-  srcSet,
-  placeholderSrc,
-  bgColor,
-}: PhotoImageProps) => {
+const PhotoImage = ({ height, width, src, alt, srcSet, color }: PhotoImageProps) => {
   const aspectRatio = height / width || 1;
 
   return (
-    <ImageBackground $bgColor={bgColor}>
+    <ImageBackground $bgColor={color}>
       <ImageContainer $aspectRatio={aspectRatio}>
         <ImageWrapper $aspectRatio={aspectRatio}>
           <Image
             src={src}
             alt={alt}
             srcSet={srcSet}
-            placeholderSrc={placeholderSrc}
+            placeholderColor={color}
             fill
             loading="eager"
             fetchPriority="high"

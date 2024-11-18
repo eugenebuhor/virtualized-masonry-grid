@@ -4,8 +4,7 @@ interface ImageContainerProps {
   $width?: number;
   $height?: number;
   $fill?: boolean;
-  $placeholderSrc?: string;
-  $loaded: boolean;
+  $placeholderColor?: string;
   $objectFit: string;
 }
 
@@ -17,15 +16,20 @@ const FillCss = css`
   height: 100%;
 `;
 
-const DimensionCss = css<Pick<ImageContainerProps, '$width' | '$height'>>`
+const FixedSizeCss = css<Pick<ImageContainerProps, '$width' | '$height'>>`
   width: ${({ $width }) => $width}px;
   height: ${({ $height }) => $height}px;
 `;
 
 export const ImageContainer = styled.div<ImageContainerProps>`
   position: relative;
+  ${(props) =>
+    props.$placeholderColor &&
+    css`
+      background-color: ${props.$placeholderColor || props.theme.palette.surface.secondary};
+    `}
 
-  ${(props) => (props.$fill ? FillCss : props.$width && props.$height ? DimensionCss : '')}
+  ${(props) => (props.$fill ? FillCss : props.$width && props.$height ? FixedSizeCss : '')}
 `;
 
 interface ImgProps {
