@@ -2,11 +2,11 @@ import { type ReactNode, Children } from 'react';
 import { GridContainer, GridItem } from './MasonryGrid.styled.ts';
 import type { ColumnsConfig } from '../types/masonry.ts';
 
-type MasonryGridProps = {
+interface MasonryGridProps {
   children: ReactNode;
   columns?: number | ColumnsConfig;
   gap?: number;
-};
+}
 
 export const DEFAULT_COLUMNS = 3;
 

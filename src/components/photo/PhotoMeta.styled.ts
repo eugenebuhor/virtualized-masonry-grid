@@ -11,7 +11,7 @@ export const Title = styled.h2`
 `;
 
 export const Description = styled.p`
-  padding: 1rem;
+  padding: ${({ theme }) => theme.spacing.padding.lg};
   background-color: ${({ theme }) => theme.palette.surface.secondary};
   font-size: ${({ theme }) => theme.typography.fontSize.body1};
   border-radius: ${({ theme }) => theme.border.radius.sm};

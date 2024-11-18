@@ -10,7 +10,7 @@ export const Section = styled.section<{ $row?: boolean; $gap?: string }>`
   ${({ theme, $row, $gap = '0rem' }) => css`
     width: 100%;
     max-width: ${({ theme }) => theme.layout.maxWidth};
-    padding: ${theme.layout.padding};
+    padding: ${theme.spacing.padding.lg};
     display: flex;
     $gap: ${$gap};
     flex-direction: column;

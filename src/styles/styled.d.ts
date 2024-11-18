@@ -1,5 +1,5 @@
 import 'styled-components';
-import type { Palette, Typography, Viewport, Layout, Border } from '../types/theme';
+import type { Palette, Typography, Viewport, Layout, Border, Spacing } from '../types/theme';
 
 declare module 'styled-components' {
   export interface DefaultTheme {
@@ -8,5 +8,6 @@ declare module 'styled-components' {
     layout: Layout;
     border: Border;
     viewport: Viewport;
+    spacing: Spacing;
   }
 }
