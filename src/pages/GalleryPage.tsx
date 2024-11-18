@@ -54,10 +54,9 @@ const GalleryPage = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query') || '';
-  const page = searchParams.get('page') || '1';
+
   const { data, isLoading, isError, refetch, hasNextPage, fetchNextPage } = usePhotos({
     query,
-    page: parseInt(page, 10),
   });
 
   const loadMore = useCallback(() => {
