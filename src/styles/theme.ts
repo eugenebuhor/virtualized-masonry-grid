@@ -51,7 +51,7 @@ const commonTheme = {
     },
   },
   layout: {
-    maxWidth: '1024px',
+    maxWidth: '1440px',
     minWidth: '320px',
     padding: '15px',
     headerHeight: '100px',
