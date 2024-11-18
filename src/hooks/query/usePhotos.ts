@@ -8,20 +8,21 @@ import type {
 
 type UsePhotosParams = Partial<SearchPhotosParams & GetCuratedPhotosParams>;
 
-const getPageParamFromApiUrl = (url?: string): number | boolean => {
-  if (!url) return false;
+const getPageParamFromApiUrl = (url?: string): number | undefined => {
+  if (!url) return undefined;
 
   const params = new URLSearchParams(new URL(url).search);
-  return Number(params.get('page'));
+  const page = params.get('page');
+  return page ? parseInt(page, 10) : undefined;
 };
 
 export const usePhotos = (params: UsePhotosParams) => {
-  const { query, page, ...restParams } = params;
+  const { query, ...restParams } = params;
 
   return useInfiniteQuery<PhotosResponse>({
-    initialPageParam: page ?? 1,
+    initialPageParam: 1,
     queryKey: ['photos', query],
-    queryFn: async ({ pageParam = page ?? 1 }) => {
+    queryFn: async ({ pageParam = 1 }) => {
       const apiParams = { ...restParams, page: pageParam as number };
 
       if (query?.trim()) {
@@ -30,7 +31,7 @@ export const usePhotos = (params: UsePhotosParams) => {
         return getCuratedPhotos(apiParams);
       }
     },
-    getPreviousPageParam: (lastPage) => getPageParamFromApiUrl(lastPage.prev_page) ?? false,
-    getNextPageParam: (lastPage) => getPageParamFromApiUrl(lastPage.next_page) ?? false,
+    getPreviousPageParam: (lastPage) => getPageParamFromApiUrl(lastPage.prev_page),
+    getNextPageParam: (lastPage) => getPageParamFromApiUrl(lastPage.next_page),
   });
 };
