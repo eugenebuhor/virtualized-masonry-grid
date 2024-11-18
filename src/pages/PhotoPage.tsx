@@ -6,6 +6,7 @@ import type { Photo } from '../types/pexels.ts';
 import { Main, Section } from '../components/Layout.tsx';
 import PhotoMeta from '../components/photo/PhotoMeta.tsx';
 import useMediaQuery from '../hooks/useMediaQuery.ts';
+import NavBack from '../components/photo/NavBack.tsx';
 
 const NoResultFallback = () => {
   return (
@@ -46,14 +47,14 @@ const ErrorFallback = ({ refetch }: { refetch: () => void }) => {
 const PhotoPage = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.viewport.mediaQueries.mobile);
-  const { state } = useLocation() as Location<Photo | null>;
   const { photoId } = useParams();
+  const { state } = useLocation() as Location<{ data: Photo; query?: string } | null>;
   const { data, isLoading, isError, refetch } = usePhoto(
     { id: parseInt(photoId!) },
-    { enabled: !state },
+    { enabled: !state?.query },
   );
 
-  const photo = state || data;
+  const photo = state?.data || data;
 
   if (isLoading) {
     return <LoadingFallback />;
@@ -68,21 +69,25 @@ const PhotoPage = () => {
   }
 
   return (
-    <Main $columns={isMobile ? 1 : 2}>
-      <Section>
-        <PhotoImage
-          src={photo.src.portrait}
-          alt={photo.alt}
-          srcSet={`${photo.src.large} 1x, ${photo.src.large2x} 2x`}
-          width={photo.width}
-          height={photo.height}
-          color={photo.avg_color}
-        />
-      </Section>
-      <Section>
-        <PhotoMeta photographer={photo.photographer} alt={photo.alt} />
-      </Section>
-    </Main>
+    <>
+      <NavBack query={state?.query} photoId={photo.id} />
+
+      <Main $columns={isMobile ? 1 : 2}>
+        <Section>
+          <PhotoImage
+            src={photo.src.portrait}
+            alt={photo.alt}
+            srcSet={`${photo.src.large} 1x, ${photo.src.large2x} 2x`}
+            width={photo.width}
+            height={photo.height}
+            color={photo.avg_color}
+          />
+        </Section>
+        <Section>
+          <PhotoMeta photographer={photo.photographer} alt={photo.alt} />
+        </Section>
+      </Main>
+    </>
   );
 };
 

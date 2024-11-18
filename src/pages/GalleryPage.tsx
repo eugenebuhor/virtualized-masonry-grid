@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { type Location, useLocation } from 'react-router';
 import { useTheme } from 'styled-components';
 import VirtualizedMasonryGrid from '../components/VirtualizedMasonryGrid.tsx';
 import GalleryImage from '../components/gallery/GalleryImage.tsx';
@@ -53,6 +54,8 @@ const ErrorFallback = ({ refetch }: { refetch: () => void }) => {
 const GalleryPage = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
+  const { state } = useLocation() as Location<{ itemToScroll: number } | null>;
+  const itemToScroll = state?.itemToScroll;
   const query = searchParams.get('query') || '';
 
   const { data, isLoading, isError, refetch, hasNextPage, fetchNextPage } = usePhotos({
@@ -74,6 +77,9 @@ const GalleryPage = () => {
   }
 
   const photos = data?.pages.flatMap((page) => page.photos) || [];
+  const indexToScroll = itemToScroll
+    ? photos.findIndex((photo) => photo.id === itemToScroll)
+    : undefined;
 
   if (!photos.length) {
     return <NoResultsFallback />;
@@ -89,9 +95,10 @@ const GalleryPage = () => {
           hasMore={hasNextPage}
           gap={16}
           overscan={4}
+          indexToScroll={indexToScroll}
         >
           {(photo) => (
-            <Link to={`/photo/${photo.id}`} state={photo}>
+            <Link to={`/photo/${photo.id}`} state={{ data: photo, query }}>
               <GalleryImage
                 src={photo.src.portrait}
                 color={photo.avg_color}

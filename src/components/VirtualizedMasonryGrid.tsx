@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef, forwardRef } from 'react';
+import { type ReactNode, useEffect, useRef, forwardRef, useLayoutEffect } from 'react';
 import { useTheme } from 'styled-components';
 import { GridContainer, GridItem as StyledGridItem } from './VirtualizedMasonryGrid.styled.ts';
 import { useGridLayout } from '../hooks/masontry/useGridLayout.ts';
@@ -40,6 +40,11 @@ interface VirtualizedMasonryGridProps<T extends GridItem> {
    * Indicating whether there are more items to load.
    */
   hasMore?: boolean;
+
+  /**
+   * Index of the item to scroll to.
+   */
+  indexToScroll?: number;
 }
 
 export const DEFAULT_COLUMNS = 3;
@@ -60,9 +65,11 @@ const VirtualizedMasonryGrid = <T extends GridItem>({
   overscan = 8,
   loadMore,
   hasMore,
+  indexToScroll,
 }: VirtualizedMasonryGridProps<T>) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const loaderRef = useRef<HTMLDivElement | null>(null);
+  const hasScrolledInitially = useRef(false);
   const theme = useTheme();
 
   const { positions, containerHeight } = useGridLayout({
@@ -91,7 +98,7 @@ const VirtualizedMasonryGrid = <T extends GridItem>({
           loadMore(items.length ? items.length - 1 : 0);
         }
       },
-      { threshold: 0.5 },
+      { threshold: 0 },
     );
 
     const loaderRefCurrent = loaderRef.current;
@@ -101,6 +108,15 @@ const VirtualizedMasonryGrid = <T extends GridItem>({
       if (loaderRefCurrent) observer.unobserve(loaderRefCurrent);
     };
   }, [loadMore, hasMore, items.length, containerHeight]);
+
+  // scroll to the item on mount
+  useLayoutEffect(() => {
+    if (indexToScroll !== undefined && !hasScrolledInitially.current && positions[indexToScroll]) {
+      const { translateX, translateY } = positions[indexToScroll];
+      hasScrolledInitially.current = true;
+      window.scrollTo({ top: translateY, left: translateX });
+    }
+  }, [indexToScroll, positions]);
 
   return (
     <>
