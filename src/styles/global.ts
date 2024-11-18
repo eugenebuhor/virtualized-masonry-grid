@@ -72,8 +72,18 @@ const GlobalStyle = createGlobalStyle(
       }
 
       &::placeholder {
+        user-select: none;
         color: ${theme.palette.common.gray400};
       }
+    }
+
+    a {
+      text-decoration: none;
+      color: ${theme.palette.text.primary};
+    }
+
+    a:hover {
+      opacity: 0.7;
     }
   `,
 );

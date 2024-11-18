@@ -1,25 +1,25 @@
 import Image from '../Image.tsx';
 import { ImageWrapper } from './GalleryImage.styled.ts';
 import type { Viewport } from '../../types/theme.ts';
-import type { ColumnsConfig } from '../../types/masonry.ts';
+import type { GridColumnsConfig } from '../../types/masonry.ts';
 
 interface GalleryImageProps {
   src: string;
-  placeholderSrc: string;
   height: number;
   width: number;
   alt: string;
   srcSet: string;
+  color: string;
   mediaQueries: Viewport['mediaQueries'];
-  columns: ColumnsConfig;
+  columns: GridColumnsConfig;
 }
 
 const GalleryImage = ({
   src,
-  placeholderSrc,
   height,
   width,
   alt,
+  color,
   srcSet,
   mediaQueries,
   columns,
@@ -33,14 +33,7 @@ const GalleryImage = ({
 
   return (
     <ImageWrapper $aspectRatio={height / width || 1}>
-      <Image
-        fill
-        src={src}
-        placeholderSrc={placeholderSrc}
-        alt={alt}
-        srcSet={srcSet}
-        sizes={sizes}
-      />
+      <Image fill src={src} placeholderColor={color} alt={alt} srcSet={srcSet} sizes={sizes} />
     </ImageWrapper>
   );
 };

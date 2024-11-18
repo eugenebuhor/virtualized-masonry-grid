@@ -1,13 +1,15 @@
+import { useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
+import { type Location, useLocation } from 'react-router';
 import { useTheme } from 'styled-components';
 import VirtualizedMasonryGrid from '../components/VirtualizedMasonryGrid.tsx';
-import { usePhotos } from '../hooks/usePhotos.ts';
-import { getPhotoSrcSet } from '../utils/pexels.ts';
-import type { ColumnsConfig } from '../types/masonry.ts';
 import GalleryImage from '../components/gallery/GalleryImage.tsx';
 import { Main, Section } from '../components/Layout.tsx';
+import { usePhotos } from '../hooks/query/usePhotos.ts';
+import { getPhotoSrcSet } from '../utils/pexels.ts';
+import type { GridColumnsConfig } from '../types/masonry.ts';
 
-const masonryGridColumns: ColumnsConfig = {
+const masonryGridColumns: GridColumnsConfig = {
   mobile: 2,
   tablet: 3,
   laptop: 4,
@@ -52,12 +54,19 @@ const ErrorFallback = ({ refetch }: { refetch: () => void }) => {
 const GalleryPage = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
+  const { state } = useLocation() as Location<{ itemToScroll: number } | null>;
+  const itemToScroll = state?.itemToScroll;
   const query = searchParams.get('query') || '';
-  const page = searchParams.get('page') || '1';
-  const { data, isLoading, isError, refetch } = usePhotos({
+
+  const { data, isLoading, isError, refetch, hasNextPage, fetchNextPage } = usePhotos({
     query,
-    page: parseInt(page, 10),
   });
+
+  const loadMore = useCallback(() => {
+    if (hasNextPage) {
+      fetchNextPage();
+    }
+  }, [hasNextPage, fetchNextPage]);
 
   if (isLoading) {
     return <LoadingFallback />;
@@ -68,6 +77,9 @@ const GalleryPage = () => {
   }
 
   const photos = data?.pages.flatMap((page) => page.photos) || [];
+  const indexToScroll = itemToScroll
+    ? photos.findIndex((photo) => photo.id === itemToScroll)
+    : undefined;
 
   if (!photos.length) {
     return <NoResultsFallback />;
@@ -76,12 +88,24 @@ const GalleryPage = () => {
   return (
     <Main>
       <Section>
-        <VirtualizedMasonryGrid items={photos} columns={masonryGridColumns} gap={16} overscan={10}>
+        <VirtualizedMasonryGrid
+          items={photos}
+          columns={masonryGridColumns}
+          loadMore={loadMore}
+          hasMore={hasNextPage}
+          gap={16}
+          overscan={4}
+          indexToScroll={indexToScroll}
+        >
           {(photo) => (
-            <Link to={`/photo/${photo.id}`} state={photo}>
+            <Link
+              to={`/photo/${photo.id}`}
+              state={{ data: photo, query }}
+              aria-label={`View photo: ${photo.alt}`}
+            >
               <GalleryImage
                 src={photo.src.portrait}
-                placeholderSrc={photo.src.small}
+                color={photo.avg_color}
                 alt={photo.alt}
                 height={photo.height}
                 width={photo.width}
