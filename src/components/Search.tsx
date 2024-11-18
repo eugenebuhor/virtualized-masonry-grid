@@ -1,6 +1,11 @@
 import { type FormEvent, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import debounce from 'lodash.debounce';
+import styled from 'styled-components';
+
+const Input = styled.input`
+  min-width: ${({ theme }) => theme.layout.minWidth};
+`;
 
 const Search = ({ onSearch }: { onSearch?: (query: string) => void }) => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -31,7 +36,7 @@ const Search = ({ onSearch }: { onSearch?: (query: string) => void }) => {
 
   return (
     <form role="search" onSubmit={handleSubmit}>
-      <input
+      <Input
         name="query"
         type="text"
         defaultValue={query}
