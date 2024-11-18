@@ -1,11 +1,10 @@
 import styled, { css } from 'styled-components';
 
-interface StyledImageContainerProps {
+interface ImageContainerProps {
   $width?: number;
   $height?: number;
   $fill?: boolean;
-  $placeholderSrc?: string;
-  $loaded: boolean;
+  $placeholderColor?: string;
   $objectFit: string;
 }
 
@@ -17,30 +16,42 @@ const FillCss = css`
   height: 100%;
 `;
 
-const DimensionCss = css<Pick<StyledImageContainerProps, '$width' | '$height'>>`
+const FixedSizeCss = css<Pick<ImageContainerProps, '$width' | '$height'>>`
   width: ${({ $width }) => $width}px;
   height: ${({ $height }) => $height}px;
 `;
 
-export const StyledImageContainer = styled.div<StyledImageContainerProps>`
+export const ImageContainer = styled.div<ImageContainerProps>`
   position: relative;
-  background-image: url(${({ $placeholderSrc }) => $placeholderSrc});
-  background-size: ${({ $objectFit }) => $objectFit};
-  background-position: center;
-  background-repeat: no-repeat;
+  ${(props) =>
+    props.$placeholderColor &&
+    css`
+      background-color: ${props.$placeholderColor || props.theme.palette.surface.secondary};
+    `}
 
-  ${(props) => (props.$fill ? FillCss : props.$width && props.$height ? DimensionCss : '')}
+  ${(props) => (props.$fill ? FillCss : props.$width && props.$height ? FixedSizeCss : '')}
 `;
 
-interface StyledImageProps {
-  $loaded: boolean;
+interface ImgProps {
   $objectFit: string;
+  $loaded: boolean;
 }
 
-export const StyledImage = styled.img<StyledImageProps>`
+export const Img = styled.img<ImgProps>`
   ${FillCss};
   object-fit: ${({ $objectFit }) => $objectFit};
 
   opacity: ${({ $loaded }) => ($loaded ? 1 : 0)};
   transition: opacity 0.3s ease-in-out;
+`;
+
+interface PlaceholderImgProps {
+  $objectFit: string;
+}
+
+export const PlaceholderImg = styled.img<PlaceholderImgProps>`
+  ${FillCss};
+  object-fit: ${({ $objectFit }) => $objectFit};
+  z-index: -1;
+  opacity: 1;
 `;

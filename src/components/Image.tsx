@@ -1,32 +1,46 @@
 import { type SyntheticEvent, type ImgHTMLAttributes, useState, forwardRef } from 'react';
-import { StyledImageContainer, StyledImage } from './Image.styled.ts';
+import { ImageContainer, Img, PlaceholderImg } from './Image.styled.ts';
 
 interface CommonImageProps extends ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
   placeholderSrc?: string;
+  placeholderColor?: string;
   onLoad?: (event: SyntheticEvent<HTMLImageElement, Event>) => void;
   onError?: (event: SyntheticEvent<HTMLImageElement, Event>) => void;
   objectFit?: 'contain' | 'cover';
 }
 
-interface FixedSizeImageProps extends CommonImageProps {
+interface PlaceholderSrc {
+  placeholderSrc: string;
+  placeholderColor?: never;
+}
+
+interface PlaceholderColor {
+  placeholderColor: string;
+  placeholderSrc?: never;
+}
+
+interface FixedSizeProps {
   width: number;
   height: number;
   fill?: never;
 }
 
-interface FillImageProps extends CommonImageProps {
+interface FillProps {
   fill: boolean;
   width?: never;
   height?: never;
 }
 
-export type ImageProps = FixedSizeImageProps | FillImageProps;
+type ImageProps = CommonImageProps &
+  (FixedSizeProps | FillProps) &
+  (PlaceholderSrc | PlaceholderColor);
 
 const Image = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
   const {
     placeholderSrc,
+    placeholderColor,
     width,
     height,
     fill,
@@ -48,16 +62,18 @@ const Image = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
   };
 
   return (
-    <StyledImageContainer
+    <ImageContainer
       ref={ref}
       $width={width}
       $height={height}
       $fill={fill}
-      $placeholderSrc={placeholderSrc}
-      $loaded={loaded}
+      $placeholderColor={placeholderColor}
       $objectFit={objectFit}
     >
-      <StyledImage
+      {placeholderSrc ? (
+        <PlaceholderImg src={placeholderSrc} $objectFit={objectFit} alt="" />
+      ) : null}
+      <Img
         loading={loading}
         decoding={decoding}
         fetchPriority={fetchPriority}
@@ -66,7 +82,7 @@ const Image = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
         $objectFit={objectFit}
         {...rest}
       />
-    </StyledImageContainer>
+    </ImageContainer>
   );
 });
 
