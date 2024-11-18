@@ -13,28 +13,64 @@ const masonryGridColumns: ColumnsConfig = {
   laptop: 4,
 };
 
+const NoResultsFallback = () => {
+  return (
+    <Main>
+      <Section>
+        <div>No photos found.</div>
+      </Section>
+    </Main>
+  );
+};
+
+const LoadingFallback = () => {
+  return (
+    <Main>
+      <Section>
+        <div>Loading...</div>
+      </Section>
+    </Main>
+  );
+};
+
+const ErrorFallback = ({ refetch }: { refetch: () => void }) => {
+  return (
+    <Main>
+      <Section>
+        <div>
+          <h2>Unable to Load Photos</h2>
+          <p>There was an error while loading the photos. Please try again.</p>
+          <button type="button" onClick={() => refetch()}>
+            Retry
+          </button>
+        </div>
+      </Section>
+    </Main>
+  );
+};
+
 const GalleryPage = () => {
   const theme = useTheme();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('query') || '';
   const page = searchParams.get('page') || '1';
-  const { data, isLoading, isError } = usePhotos({
+  const { data, isLoading, isError, refetch } = usePhotos({
     query,
     page: parseInt(page, 10),
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <LoadingFallback />;
   }
 
   if (isError) {
-    return <div>Error loading photos.</div>;
+    return <ErrorFallback refetch={refetch} />;
   }
 
   const photos = data?.pages.flatMap((page) => page.photos) || [];
 
   if (!photos.length) {
-    return <div>No photos found.</div>;
+    return <NoResultsFallback />;
   }
 
   return (

@@ -42,10 +42,19 @@ const GlobalStyle = createGlobalStyle(
       text-decoration: none;
       border: none;
       user-select: none;
-    }
+      padding: 8px 12px;
+      background-color: ${theme.palette.common.gray100};
+      color: ${theme.palette.text.primary};
+      border-radius: ${theme.border.radius.sm};
 
-    button:disabled {
-      cursor: initial;
+      &:disabled {
+        cursor: initial;
+        color: ${theme.palette.text.secondary};
+      }
+
+      &:hover {
+        background-color: ${theme.palette.common.gray200};
+      }
     }
 
     input {
