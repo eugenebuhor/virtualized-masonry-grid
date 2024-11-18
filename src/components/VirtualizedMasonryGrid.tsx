@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState, useRef, useCallback } from 'react';
+import { type ReactNode, useEffect, useState, useRef, useCallback, forwardRef } from 'react';
 import { useTheme } from 'styled-components';
 import debounce from 'lodash.debounce';
 import { GridContainer, GridItem } from './VirtualizedMasonryGrid.styled.ts';
@@ -24,9 +24,19 @@ interface VirtualizedMasonryGridProps<T extends BaseGridItem> {
   columns?: number | ColumnsConfig;
   gap?: number;
   overscan?: number;
+  loadMore?: (index: number) => void;
+  hasMore?: boolean;
 }
 
 export const DEFAULT_COLUMNS = 3;
+
+const LoadingFallback = forwardRef<HTMLDivElement>((_, ref) => {
+  return (
+    <div ref={ref} style={{ height: '50px', textAlign: 'center' }}>
+      Loading...
+    </div>
+  );
+});
 
 const VirtualizedMasonryGrid = <T extends BaseGridItem>({
   items,
@@ -34,8 +44,12 @@ const VirtualizedMasonryGrid = <T extends BaseGridItem>({
   columns = DEFAULT_COLUMNS,
   gap = 16,
   overscan = 8,
+  loadMore,
+  hasMore,
 }: VirtualizedMasonryGridProps<T>) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const loaderRef = useRef<HTMLDivElement | null>(null);
+
   const [positions, setPositions] = useState<GridItemPosition[]>([]);
   const [visibleItems, setVisibleItems] = useState<number[]>([]);
   const [containerHeight, setContainerHeight] = useState(0);
@@ -76,7 +90,10 @@ const VirtualizedMasonryGrid = <T extends BaseGridItem>({
   }, [items, gap, columns, theme.viewport.breakpoints]);
 
   const updateVisibleItems = useCallback(() => {
-    if (!positions.length) return;
+    if (!positions.length || !containerRef.current) return;
+
+    const containerRect = containerRef.current.getBoundingClientRect();
+    const containerTop = containerRect.top + window.scrollY;
 
     const scrollTop = window.scrollY;
     const windowHeight = window.innerHeight;
@@ -84,22 +101,41 @@ const VirtualizedMasonryGrid = <T extends BaseGridItem>({
     const start = scrollTop;
     const end = scrollTop + windowHeight;
 
-    const viewportIndices = positions.reduce<number[]>((acc, pos, index) => {
-      if (pos.translateY + pos.height + gap >= start && pos.translateY + gap <= end) {
-        acc.push(index);
-      }
-      return acc;
-    }, []);
+    // create an array with positions and indices
+    const positionsWithIndex = positions.map((pos, index) => ({
+      index,
+      translateY: pos.translateY,
+      height: pos.height,
+    }));
 
-    const startOverscan = Math.max(0, viewportIndices[0] - overscan);
-    const endOverscan = Math.min(
+    // sort the array by translateY
+    positionsWithIndex.sort((a, b) => a.translateY - b.translateY);
+
+    const viewportIndices: number[] = [];
+    for (const item of positionsWithIndex) {
+      const itemTop = containerTop + item.translateY;
+      const itemBottom = itemTop + item.height;
+
+      if (itemBottom + gap >= start && itemTop - gap <= end) {
+        viewportIndices.push(item.index);
+      } else if (itemTop - gap > end) {
+        // break if items are sorted
+        break;
+      }
+    }
+
+    if (viewportIndices.length === 0) {
+      setVisibleItems([]);
+      return;
+    }
+
+    const startIndex = Math.max(0, viewportIndices[0] - overscan);
+    const endIndex = Math.min(
       items.length - 1,
       viewportIndices[viewportIndices.length - 1] + overscan,
     );
 
-    setVisibleItems(
-      Array.from({ length: endOverscan - startOverscan + 1 }, (_, i) => startOverscan + i),
-    );
+    setVisibleItems(Array.from({ length: endIndex - startIndex + 1 }, (_, i) => startIndex + i));
   }, [positions, overscan, items.length, gap]);
 
   useEffect(() => {
@@ -119,32 +155,64 @@ const VirtualizedMasonryGrid = <T extends BaseGridItem>({
   useEffect(() => {
     updateVisibleItems();
 
-    window.addEventListener('scroll', updateVisibleItems);
+    const throttledScrollHandler = debounce(() => {
+      updateVisibleItems();
+    }, 50);
+
+    window.addEventListener('scroll', throttledScrollHandler);
     return () => {
-      window.removeEventListener('scroll', updateVisibleItems);
+      throttledScrollHandler.cancel();
+      window.removeEventListener('scroll', throttledScrollHandler);
     };
   }, [updateVisibleItems]);
 
-  return (
-    <GridContainer ref={containerRef} style={{ height: containerHeight }} role="list">
-      {visibleItems.map((index) => {
-        const pos = positions[index];
-        const item = items[index];
+  useEffect(() => {
+    updateVisibleItems();
+  }, [positions, updateVisibleItems]);
 
-        return (
-          <GridItem
-            role="list-item"
-            key={item.id}
-            $translateX={pos.translateX}
-            $translateY={pos.translateY}
-            $width={pos.width}
-            $height={pos.height}
-          >
-            {children(item, index)}
-          </GridItem>
-        );
-      })}
-    </GridContainer>
+  useEffect(() => {
+    if (!loadMore || !hasMore || containerHeight === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          loadMore(items.length ? items.length - 1 : 0);
+        }
+      },
+      { threshold: 0.5 },
+    );
+
+    const loaderRefCurrent = loaderRef.current;
+
+    if (loaderRefCurrent) observer.observe(loaderRefCurrent);
+    return () => {
+      if (loaderRefCurrent) observer.unobserve(loaderRefCurrent);
+    };
+  }, [loadMore, hasMore, items.length, containerHeight]);
+
+  return (
+    <>
+      <GridContainer ref={containerRef} style={{ height: containerHeight }} role="list">
+        {visibleItems.map((index) => {
+          const pos = positions[index];
+          const item = items[index];
+
+          return (
+            <GridItem
+              role="list-item"
+              key={`${item.id}-${index}`}
+              $translateX={pos.translateX}
+              $translateY={pos.translateY}
+              $width={pos.width}
+              $height={pos.height}
+            >
+              {children(item, index)}
+            </GridItem>
+          );
+        })}
+      </GridContainer>
+      {hasMore && containerHeight > 0 ? <LoadingFallback ref={loaderRef} /> : null}
+    </>
   );
 };
 
