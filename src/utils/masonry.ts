@@ -1,9 +1,12 @@
-import type { ColumnsConfig } from '../types/masonry';
+import type { GridColumnsConfig } from '../types/masonry';
 import type { Viewport } from '../types/theme.ts';
 import { DEFAULT_COLUMNS } from '../components/VirtualizedMasonryGrid';
 
-export const getInheritedColumns = (columns: ColumnsConfig, fallback: number): ColumnsConfig => {
-  const inheritedColumns = {} as ColumnsConfig;
+export const getInheritedColumns = (
+  columns: GridColumnsConfig,
+  fallback: number,
+): GridColumnsConfig => {
+  const inheritedColumns = {} as GridColumnsConfig;
   const breakpointsOrder = ['mobile', 'tablet', 'laptop', 'desktop', 'largeScreen'] as const;
 
   breakpointsOrder.forEach((breakpoint, index) => {
@@ -24,7 +27,7 @@ export const getInheritedColumns = (columns: ColumnsConfig, fallback: number): C
 };
 
 export const getColumns = (
-  columns: ColumnsConfig,
+  columns: GridColumnsConfig,
   breakpoints: Viewport['breakpoints'],
 ): number => {
   const inheritedColumns = getInheritedColumns(columns, DEFAULT_COLUMNS);

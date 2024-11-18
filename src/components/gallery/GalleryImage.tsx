@@ -1,7 +1,7 @@
 import Image from '../Image.tsx';
 import { ImageWrapper } from './GalleryImage.styled.ts';
 import type { Viewport } from '../../types/theme.ts';
-import type { ColumnsConfig } from '../../types/masonry.ts';
+import type { GridColumnsConfig } from '../../types/masonry.ts';
 
 interface GalleryImageProps {
   src: string;
@@ -11,7 +11,7 @@ interface GalleryImageProps {
   alt: string;
   srcSet: string;
   mediaQueries: Viewport['mediaQueries'];
-  columns: ColumnsConfig;
+  columns: GridColumnsConfig;
 }
 
 const GalleryImage = ({

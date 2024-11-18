@@ -1,6 +1,6 @@
 import { useTheme } from 'styled-components';
 import { useLocation, useParams, type Location } from 'react-router';
-import { usePhoto } from '../hooks/usePhoto.ts';
+import { usePhoto } from '../hooks/query/usePhoto.ts';
 import PhotoImage from '../components/photo/PhotoImage.tsx';
 import type { Photo } from '../types/pexels.ts';
 import { Main, Section } from '../components/Layout.tsx';

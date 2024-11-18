@@ -2,13 +2,13 @@ import { useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useTheme } from 'styled-components';
 import VirtualizedMasonryGrid from '../components/VirtualizedMasonryGrid.tsx';
-import { usePhotos } from '../hooks/usePhotos.ts';
-import { getPhotoSrcSet } from '../utils/pexels.ts';
-import type { ColumnsConfig } from '../types/masonry.ts';
 import GalleryImage from '../components/gallery/GalleryImage.tsx';
 import { Main, Section } from '../components/Layout.tsx';
+import { usePhotos } from '../hooks/query/usePhotos.ts';
+import { getPhotoSrcSet } from '../utils/pexels.ts';
+import type { GridColumnsConfig } from '../types/masonry.ts';
 
-const masonryGridColumns: ColumnsConfig = {
+const masonryGridColumns: GridColumnsConfig = {
   mobile: 2,
   tablet: 3,
   laptop: 4,

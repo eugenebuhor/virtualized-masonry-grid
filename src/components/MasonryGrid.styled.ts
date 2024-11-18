@@ -1,9 +1,9 @@
 import styled, { css, DefaultTheme } from 'styled-components';
 import { DEFAULT_COLUMNS } from './MasonryGrid.tsx';
 import { getInheritedColumns } from '../utils/masonry.ts';
-import type { ColumnsConfig } from '../types/masonry.ts';
+import type { GridColumnsConfig } from '../types/masonry.ts';
 
-const getColumnCountCss = (theme: DefaultTheme, columns: number | ColumnsConfig) => {
+const getColumnCountCss = (theme: DefaultTheme, columns: number | GridColumnsConfig) => {
   const cascadedColumns =
     typeof columns === 'number'
       ? { mobile: columns }
@@ -28,7 +28,7 @@ const getColumnCountCss = (theme: DefaultTheme, columns: number | ColumnsConfig)
   `;
 };
 
-export const GridContainer = styled.div<{ $columns: number | ColumnsConfig; $gap: number }>`
+export const GridContainer = styled.div<{ $columns: number | GridColumnsConfig; $gap: number }>`
   column-gap: ${(props) => props.$gap}px;
   ${(props) => getColumnCountCss(props.theme, props.$columns)};
 `;
