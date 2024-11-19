@@ -11,6 +11,7 @@ export const ImageWrapper = styled.div<{ $aspectRatio: number }>`
   overflow: hidden;
 
   transition: transform 0.2s ease-in-out;
+
   &:hover {
     transform: scale(1.015);
   }
