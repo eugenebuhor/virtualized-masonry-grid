@@ -15,6 +15,10 @@ const Nav = styled(Main)`
 
   a {
     width: fit-content;
+
+    a:hover {
+      opacity: 0.7;
+    }
   }
 `;
 

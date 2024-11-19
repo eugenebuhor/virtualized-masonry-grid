@@ -77,10 +77,6 @@ const GlobalStyle = createGlobalStyle(
       text-decoration: none;
       color: ${theme.palette.text.primary};
     }
-
-    a:hover {
-      opacity: 0.7;
-    }
   `,
 );
 
