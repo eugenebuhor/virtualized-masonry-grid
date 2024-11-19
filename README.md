@@ -54,6 +54,10 @@ Serve the production build locally using `vite preview`:
 npm run preview
 ```
 
+or statically serve the dist folder with `serve`:
+```bash
+npx serve -s dist
+```
 ---
 
 ## Testing
