@@ -2,6 +2,10 @@
 
 A virtualized masonry grid built with React, TypeScript, and Vite.
 
+Try it at the [DEMO](https://virtualized-masonry-grid.vercel.app/) page.
+
+---
+
 ## Getting Started
 
 ### Prerequisites
