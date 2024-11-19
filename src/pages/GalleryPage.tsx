@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { type Location, useLocation } from 'react-router';
 import { useTheme } from 'styled-components';
@@ -62,6 +62,8 @@ const GalleryPage = () => {
     query,
   });
 
+  const photos = useMemo(() => data?.pages.flatMap((page) => page.photos) || [], [data?.pages]);
+
   const loadMore = useCallback(() => {
     if (hasNextPage) {
       fetchNextPage();
@@ -76,7 +78,6 @@ const GalleryPage = () => {
     return <ErrorFallback refetch={refetch} />;
   }
 
-  const photos = data?.pages.flatMap((page) => page.photos) || [];
   const indexToScroll = itemToScroll
     ? photos.findIndex((photo) => photo.id === itemToScroll)
     : undefined;
@@ -96,6 +97,8 @@ const GalleryPage = () => {
           gap={16}
           overscan={4}
           indexToScroll={indexToScroll}
+          // Turn on if performance issues occur
+          throttledScroll={false}
         >
           {(photo) => (
             <Link

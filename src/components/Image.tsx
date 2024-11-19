@@ -2,12 +2,54 @@ import { type SyntheticEvent, type ImgHTMLAttributes, useState, forwardRef } fro
 import { ImageContainer, Img, PlaceholderImg } from './Image.styled.ts';
 
 interface CommonImageProps extends ImgHTMLAttributes<HTMLImageElement> {
+  /**
+   * Image source URL.
+   */
   src: string;
+
+  /**
+   * Alternative text for the image.
+   */
   alt: string;
+
+  /**
+   * Optional placeholder image source URL.
+   */
   placeholderSrc?: string;
+
+  /**
+   * Optional placeholder background color.
+   */
   placeholderColor?: string;
+
+  /**
+   * Fixed width for the image in pixels.
+   */
+  width?: number;
+
+  /**
+   * Fixed height for the image in pixels.
+   */
+  height?: number;
+
+  /**
+   * Enables the image to fill its container within aspect ratio.
+   */
+  fill?: boolean;
+
+  /**
+   * Event handler triggered when the image successfully loads.
+   */
   onLoad?: (event: SyntheticEvent<HTMLImageElement, Event>) => void;
+
+  /**
+   * Event handler triggered when the image fails to load.
+   */
   onError?: (event: SyntheticEvent<HTMLImageElement, Event>) => void;
+
+  /**
+   * Image fit within its container.
+   */
   objectFit?: 'contain' | 'cover';
 }
 
