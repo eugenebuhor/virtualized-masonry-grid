@@ -35,8 +35,9 @@ const Search = ({ onSearch }: { onSearch?: (query: string) => void }) => {
   };
 
   return (
-    <form role="search" onSubmit={handleSubmit}>
+    <form role="search" onSubmit={handleSubmit} data-testid="search-form">
       <Input
+        data-testid="search-input"
         name="query"
         type="text"
         defaultValue={query}

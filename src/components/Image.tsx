@@ -12,12 +12,12 @@ interface CommonImageProps extends ImgHTMLAttributes<HTMLImageElement> {
 }
 
 interface PlaceholderSrc {
-  placeholderSrc: string;
+  placeholderSrc?: string;
   placeholderColor?: never;
 }
 
 interface PlaceholderColor {
-  placeholderColor: string;
+  placeholderColor?: string;
   placeholderSrc?: never;
 }
 
@@ -71,9 +71,15 @@ const Image = forwardRef<HTMLDivElement, ImageProps>((props, ref) => {
       $objectFit={objectFit}
     >
       {placeholderSrc ? (
-        <PlaceholderImg src={placeholderSrc} $objectFit={objectFit} alt="" />
+        <PlaceholderImg
+          data-testid="image placeholder"
+          src={placeholderSrc}
+          $objectFit={objectFit}
+          alt=""
+        />
       ) : null}
       <Img
+        data-testid="image"
         loading={loading}
         decoding={decoding}
         fetchPriority={fetchPriority}

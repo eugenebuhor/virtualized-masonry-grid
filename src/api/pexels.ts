@@ -8,7 +8,7 @@ import type {
 } from '../types/pexels.ts';
 
 const pexelsApi = axios.create({
-  baseURL: 'https://api.pexels.com/v1',
+  baseURL: import.meta.env.VITE_PEXELS_API_URL,
   headers: {
     Authorization: import.meta.env.VITE_PEXELS_API_KEY,
   },

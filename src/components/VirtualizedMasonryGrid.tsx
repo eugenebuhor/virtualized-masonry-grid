@@ -57,7 +57,7 @@ export const DEFAULT_COLUMNS = 3;
 
 const LoadingFallback = forwardRef<HTMLDivElement>((_, ref) => {
   return (
-    <div ref={ref} style={{ height: '50px', textAlign: 'center' }}>
+    <div ref={ref} style={{ height: '50px', textAlign: 'center' }} data-testid="vmg-loader">
       Loading...
     </div>
   );
