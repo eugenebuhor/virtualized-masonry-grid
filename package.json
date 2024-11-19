@@ -1,6 +1,5 @@
 {
-  "name": "challenge-picsart",
-  "private": true,
+  "name": "virtualized-masonry-grid",
   "version": "0.0.1",
   "type": "module",
   "scripts": {

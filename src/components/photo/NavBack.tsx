@@ -12,6 +12,10 @@ interface NavBackProps {
 const Nav = styled(Main)`
   min-height: unset;
   font-size: ${({ theme }) => theme.typography.fontSize.body1};
+
+  a {
+    width: fit-content;
+  }
 `;
 
 Nav.defaultProps = {

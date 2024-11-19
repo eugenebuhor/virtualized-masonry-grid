@@ -67,10 +67,6 @@ const GlobalStyle = createGlobalStyle(
       background-color: ${({ theme }) => theme.palette.surface.secondary};
       font-size: ${({ theme }) => theme.typography.fontSize.body2};
 
-      &:focus {
-        outline: none;
-      }
-
       &::placeholder {
         user-select: none;
         color: ${theme.palette.common.gray400};
